@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Hello there!",
+    "section": "",
+    "text": "I am a Computational Social Science student with an excitement for statistics, programming and the use of computational methods in social scientific research. I have a professional background in quantitative media research and data analysis. Go check out my blog if you want to know what I’m working on at the moment. If you want to know more about me, check out my CV or my publications."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "blog/index.html#section",
+    "href": "blog/index.html#section",
+    "title": "Decode the Digits",
+    "section": "2024",
+    "text": "2024\n\n\n    \n                  \n            May 12, 2024\n        \n        \n            First test article\n            \n                \n                    R\n                \n                \n                    Web scraping\n                \n            \n            Fill in later\n        \n        \n            \n        \n    \n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Decode the Digits",
+    "section": "",
+    "text": "Welcome to my blog Decode the Digits. Add more description here."
+  },
+  {
+    "objectID": "blog/article1_tba/article1.html",
+    "href": "blog/article1_tba/article1.html",
+    "title": "First test article",
+    "section": "",
+    "text": "CitationBibTeX citation:@online{2024,\n  author = {},\n  title = {First Test Article},\n  date = {2024-05-12},\n  doi = {10.59350/pe5s8-e0f47},\n  langid = {en}\n}\nFor attribution, please cite this work as:\n“First Test Article.” 2024. May 12, 2024. https://doi.org/10.59350/pe5s8-e0f47."
+  },
+  {
+    "objectID": "blog/article1_tba/article1.html#title-1",
+    "href": "blog/article1_tba/article1.html#title-1",
+    "title": "First test article",
+    "section": "",
+    "text": "Here comes the content"
+  },
+  {
+    "objectID": "blog/2024/article1_tba/index.html",
+    "href": "blog/2024/article1_tba/index.html",
+    "title": "First test article",
+    "section": "",
+    "text": "CitationBibTeX citation:@online{2024,\n  author = {},\n  title = {First Test Article},\n  date = {2024-05-12},\n  langid = {en}\n}\nFor attribution, please cite this work as:\n“First Test Article.” 2024. May 12, 2024."
+  }
+]
