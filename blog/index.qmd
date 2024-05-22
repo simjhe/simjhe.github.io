@@ -1,5 +1,5 @@
 ---
-title: "Decode the Digits"
+title: "Blog"
 author: ""
 description: "Simon Herrmann's blog"
 listing:
@@ -23,8 +23,6 @@ freeze: false
     display: none;
 }
 ```
-
-Welcome to my blog *Decode the Digits*. Add more description here. 
 
 ## 2024
 

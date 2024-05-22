@@ -1,0 +1,26 @@
+---
+title: "Publications"
+page-layout: full
+toc: true
+toc-location: right
+toc-title: Year
+date-format: "MMMM D, YYYY"
+---
+
+In the following, you'll find an overview of reports and articles I contributed to as an author.  
+
+## 2023
+
+- Cousseran, L., Lauber, A., Herrmann, S., & Brüggen, N. (2023).  Compass: Artificial intelligence and competence 2023. Attitudes, actions and competence development in the context of AI. Munich: kopaed. <https://doi.org/10.5281/ZENODO.10058587>
+
+- Herrmann, S., Lauber, A., Cousseran, L., & Brüggen, N. (2023). Compass: Artificial intelligence and competence 2022. User types of interaction with AI. Munich: kopaed. <https://doi.org/10.5281/ZENODO.8245676>
+
+- Herrmann, S., Cousseran, L., Tausche, S., Pfaff-Rüdiger, S., & Brüggen, N. (2023). Compass: Artificial intelligence and competence 2022. Media use and attitudes towards AI. Munich: kopaed. <https://doi.org/10.5281/ZENODO.6900551>
+
+## 2022
+
+- Schober, M., Lauber, A., Bruch, L., Herrmann, S., & Brüggen, N. (2022). “What I like comes to me”. Young people's competencies in using algorithmic recommendation systems. Munich: kopaed. <https://doi.org/10.5281/ZENODO.7437429>
+
+- Pfaff-Rüdiger, S., Herrmann, S., Cousseran, L., & Brüggen, N. (2022). Compass: Artificial intelligence and competence 2022. Knowledge and action in the context of AI. Munich: kopaed. <https://doi.org/10.5281/ZENODO.6668912>
+
+*(All publication titles were translated from German into English)*

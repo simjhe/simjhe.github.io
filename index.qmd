@@ -2,15 +2,15 @@
 title: "Hello there!"
 about:
   template: jolla
-  image: profile.jpg
+  image: media/profile_img_simjhe.jpg
   links:
     - icon: github
-      text: Github
+      text: GitHub
       href: https://github.com/simjhe
     - icon: linkedin
-      text: Linkedin
+      text: LinkedIn
       href: https://www.linkedin.com/in/simon-herrmann-09255519b/
 
 ---
 
-I am a Computational Social Science student with an excitement for statistics, programming and the use of computational methods in social scientific research. I have a professional background in quantitative media research and data analysis. Go check out [my blog](blog/index.qmd)  if you want to know what I'm working on at the moment. If you want to know more about me, check out my CV or my publications. 
+I am a Computational Social Science student with an excitement for statistics, programming and the use of computational methods in social scientific research. I have a professional background in quantitative media research and data analysis. Go check out [my blog](blog/index.qmd)  if you want to know what I'm working on at the moment. If you want to know more about me, check out [my CV](cv/index.qmd) or [my publications](publications.qmd). 

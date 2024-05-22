@@ -10,6 +10,10 @@ website:
         text: About
       - href: blog/index.qmd
         text: Blog
+      - href: cv/index.qmd
+        text: CV
+      - href: publications.qmd
+        text: Publications
 
 format:
   html:
@@ -19,3 +23,13 @@ format:
 
 
 
+
+# Metadata 
+#pagetitle: "{{< meta title >}} | Andrew Heiss"
+#author-meta: "Andrew Heiss"
+
+#website:
+#  title: "Andrew Heiss"
+#  description: "Andrew Heiss is an assistant professor at Georgia State University, researching international NGOs and teaching data science & economics."
+#  favicon: "/files/favicon-512.png"
+#  site-url: "https://www.andrewheiss.com"

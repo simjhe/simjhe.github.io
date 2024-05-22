@@ -352,8 +352,8 @@ pre.text, pre.sourceCode, .cell-output pre {
         margin-top: 1.5em;
 
         .quarto-category {
-            background-color: shift-color($purple, -25%);
-            border-color: shift-color($purple, -45%);
+            background-color: shift-color($orange, -25%);
+            border-color: shift-color($orange, -45%);
             color: $white;
             font-size: 0.65em;
             opacity: 1;
@@ -639,8 +639,8 @@ pre.text, pre.sourceCode, .cell-output pre {
 
 .cv-download {
     font-family: $headings-font-family;
-    background-color: #771C6D;
-    border-color: #771C6D;
+    background-color: #e95420;
+    border-color: #e95420;
     color: $white;
 
     &:hover {
