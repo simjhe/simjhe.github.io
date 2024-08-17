@@ -244,9 +244,19 @@ Issues with pulling the image?
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> docker <span class="va">$USER</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
-<li><p>After adding your user to the Docker group, you can run the following command to apply the changes to the current session: newgrp docker</p></li>
-<li><p>After logging back in, you can verify that your user has access to Docker by running a Docker command without sudo, such as: docker ps</p></li>
-<li><p>Try again to pull the docker image</p></li>
+<li>After adding your user to the Docker group, you can run the following command to apply the changes to the current session:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">newgrp</span> docker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="3" type="1">
+<li>After logging back in, you can verify that your user has access to Docker by running a Docker command without sudo, such as:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="4" type="1">
+<li>Try again to pull the docker image</li>
 </ol>
 </div>
 </div>
@@ -255,7 +265,7 @@ Issues with pulling the image?
 <h3 class="anchored" data-anchor-id="set-up-a-docker-container-with-selenium">Set up a Docker container with Selenium</h3>
 <p>After we have successfully pulled the Selenium image, we can now create a Docker container in which we run Selenium. To do so, use the following command in the terminal:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">-p</span> 4444:4444 <span class="at">-p</span> 7900:7900 <span class="at">--shm-size</span><span class="op">=</span><span class="st">"2g"</span> selenium/standalone-firefox:latest </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">-p</span> 4444:4444 <span class="at">-p</span> 7900:7900 <span class="at">--shm-size</span><span class="op">=</span><span class="st">"2g"</span> selenium/standalone-firefox:latest </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This command creates and starts a new Docker container based on the latest selenium/standalone-firefox image.</p>
 <a data-bs-toggle="collapse" data-bs-target="#collapseElement" aria-expanded="false" aria-controls="collapseElement">
@@ -280,15 +290,15 @@ Issues with pulling the image?
 <h3 class="anchored" data-anchor-id="start-and-stop-the-selenium-docker-container">Start (and stop) the Selenium Docker container</h3>
 <p>To know whether our Docker container with Selenium is running, we should get an overview of all active Docker containers. To get an overview of all running containers, use this command in the terminal:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If you also want to see containers that are not active at the moment but ran in the past, use the command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The second command comes in really handy if you want to start a container that you have already used in the past. Then you can simply copy the ID of the desired container from the overview of already used containers and then restart the old container with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> start <span class="op">&lt;</span>paste here the ID of the desired container<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> start <span class="op">&lt;</span>paste here the ID of the desired container<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="downloads" class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -303,7 +313,7 @@ Stopping a container
 <p>I advise you to stop the container after you finish the scraping. A running container requires computing power from your system and may cause other processes on the system to slow down.</p>
 <p>To stop the container, use the command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop <span class="op">&lt;</span>ID of running container<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop <span class="op">&lt;</span>ID of running container<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -312,13 +322,13 @@ Stopping a container
 <h3 class="anchored" data-anchor-id="control-the-scraper-in-r">Control the scraper in R</h3>
 <p>Once our Docker container with Selenium is running, we can start programming our web scraper in R. To do so, we use the R package <em>selenium</em>, which you can install as usual with <code>install.packages(“selenium”)</code> in R. This package contains numerous functions with which we can control the behavior of the automated browser. Explaining every function would probably require a separate blog entry - so I will only give a rough overview of the most important functions here:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>SeleniumSession<span class="sc">$</span><span class="fu">new</span>(<span class="at">browser =</span> <span class="st">"firefox"</span>) <span class="ot">-&gt;</span> object <span class="co"># starts the automated browser (here we need to assign the output of the function to an R object which we will use to address the browser in further instructions) </span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">navigate</span>(<span class="st">"insert here an URL"</span>) <span class="co"># navigates the browser to an URL</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span>find_element <span class="co"># helps us to address a specific element on a webpage (for example with an XPATH)</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">get_page_source</span>() <span class="co"># retrieves the source code of the webpage</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>SeleniumSession<span class="sc">$</span><span class="fu">new</span>(<span class="at">browser =</span> <span class="st">"firefox"</span>) <span class="ot">-&gt;</span> object <span class="co"># starts the automated browser (here we need to assign the output of the function to an R object which we will use to address the browser in further instructions) </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">navigate</span>(<span class="st">"insert here an URL"</span>) <span class="co"># navigates the browser to an URL</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span>find_element <span class="co"># helps us to address a specific element on a webpage (for example with an XPATH)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">get_page_source</span>() <span class="co"># retrieves the source code of the webpage</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="downloads" class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -336,7 +346,7 @@ Listen on ports to see what our scraper is doing
 <p><a href="http://localhost:4444" class="uri">http://localhost:4444</a></p>
 </div>
 </div>
-<p>If you have any questions or feedback about this blog post, please feel free to send me an email. Otherwise, I wish you some happy scraping!</p>
+<p>If you have any questions or feedback about this blog post, please feel free to <a href="mailto:simhe051@student.liu.se">send me an email</a>. Otherwise, I wish you some happy scraping!</p>
 
 
 <!-- -->
@@ -629,165 +639,173 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "How to set up a web scraping environment with R and Selenium on Ubuntu"</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-05-23</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Learn in this tutorial how to create a simple and beginner-friendly web scraping environment with Selenium and R on Ubuntu"</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "img/teaser_img_scraping-tutorial.png"</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - R</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">  - Web scraping</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - Linux</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="an">resources:</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - "img/*"</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">  html: </span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">    shift-heading-level-by: 1</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> left</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">  eval: false</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>()</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preface: Required software</span></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>Whenever we want to do something great with a computer, we should have an operating system installed on it. In this tutorial, I use Ubuntu. I assume that some steps of my tutorial can also be transferred to other (especially Unix-based) operating systems. However, since I have not tried my tutorial on another operating system, I can only “guarantee”^<span class="co">[</span><span class="ot">If any problems occur despite my “guarantee”, plz don't sue me - just [write me an e-mail](mailto:simhe051@student.liu.se) ^^</span><span class="co">]</span> that my instructions will work for Ubuntu (I am using 22.04).</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>Apart from an operating system, you also need an installation of R and the Docker Engine for Ubuntu. For writing code in R, I also recommend using a suitable IDE such as RStudio. If you already have these installed on your system, you can get started right away and <span class="co">[</span><span class="ot">pull a Docker image from Selenium</span><span class="co">](index.html#pull-docker-image-of-selenium)</span>.</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>If you don't have R installed yet, you can install it from one of the <span class="co">[</span><span class="ot">CRAN mirrors in your country</span><span class="co">](https://cran.r-project.org/mirrors.html)</span>. You can install RStudio <span class="co">[</span><span class="ot">here</span><span class="co">](https://posit.co/download/rstudio-desktop/)</span>. To install the Docker Engine on your machine, follow the instructions on the <span class="co">[</span><span class="ot">docker website</span><span class="co">](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)</span>. Simply copy the code given on the page into a terminal window and you should be good to go.</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>After you have installed all the necessary software, we can move on to the main tool we will use to automate our browser: Selenium.</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Pull docker image of Selenium</span></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>Selenium is a software with which we can automate a browser. Many of the functions that Selenium contains are therefore very helpful for scraping content from a website. In this tutorial, we will not install Selenium directly on our system but run an image of Selenium within a Docker container.</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>To use Selenium within a container, we first have to pull an image of it in the Docker Engine. Depending on which browser you want to use, you can pull different versions for different browsers. Standalones are available for <span class="co">[</span><span class="ot">Firefox</span><span class="co">](https://hub.docker.com/r/selenium/standalone-firefox)</span>, <span class="co">[</span><span class="ot">Chrome</span><span class="co">](https://hub.docker.com/r/selenium/standalone-chrome)</span>, and <span class="co">[</span><span class="ot">Edge</span><span class="co">](https://hub.docker.com/r/selenium/standalone-edge)</span>.</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>Since I prefer to use Firefox, I’ll install a version that “uses” Firefox. With the following command in the terminal, you can pull the image:</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> pull selenium/standalone-firefox </span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>::: {#downloads .callout-tip}</span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Issues with pulling the image?</span></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>When I first tried to pull the image of Selenium, I got the error message: denied while trying to connect to the Docker daemon socket at unix</span>
-<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>This error usually occurs when the user who runs the command to pull the image doesn't have the necessary permissions to access the Docker daemon.</span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>Follow these steps to fix this problem permanently:</span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Add your user to the Docker group, which grants the user permission to interact with the Docker daemon. You can do this with the following command:</span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> docker <span class="va">$USER</span> </span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>After adding your user to the Docker group, you can run the following command to apply the changes to the current session: newgrp docker</span>
-<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>After logging back in, you can verify that your user has access to Docker by running a Docker command without sudo, such as: docker ps</span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Try again to pull the docker image</span>
-<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Set up a Docker container with Selenium</span></span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>After we have successfully pulled the Selenium image, we can now create a Docker container in which we run Selenium. To do so, use the following command in the terminal:</span>
-<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">-p</span> 4444:4444 <span class="at">-p</span> 7900:7900 <span class="at">--shm-size</span><span class="op">=</span><span class="st">"2g"</span> selenium/standalone-firefox:latest </span>
-<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>This command creates and starts a new Docker container based on the latest selenium/standalone-firefox image. </span>
-<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;a data-bs-toggle="collapse" data-bs-target="#collapseElement" aria-expanded="false" aria-controls="collapseElement"&gt;</span></span>
-<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a><span class="in"> &lt;b&gt;Are you interested in what all the elements of this command mean? Click here to deconstruct it.&lt;/b&gt;</span></span>
-<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;/a&gt; &lt;br&gt;</span></span>
-<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;div class="collapse" id="collapseElement"&gt;</span></span>
-<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a><span class="in">  &lt;div class="card card-body"&gt;</span></span>
-<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;ul&gt;</span></span>
-<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;docker run&lt;/strong&gt;: This is the command used to create and start a new Docker container based on a specified Docker image&lt;/li&gt;</span></span>
-<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;-d&lt;/strong&gt;: This activates the "detached mode." It tells Docker to run the container in the background and print the container ID&lt;/li&gt;</span></span>
-<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;-p 4444:4444&lt;/strong&gt;: This option maps port 4444 on the host machine to port 4444 inside the Docker container. This allows communication with the Selenium server from outside the container&lt;/li&gt;</span></span>
-<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;-p 7900:7900&lt;/strong&gt;: Similar to the previous option, this maps port 7900 on the host machine to port 7900 inside the Docker container. This port is used for Virtual Network Computing (VNC), which later allows us to see what our web scraper sees when navigating the Internet&lt;/li&gt;</span></span>
-<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;--shm-size="2g"&lt;/strong&gt;: This option sets the size of the shared memory segment for the container. In this case, it's set to 2 gigabytes (2g)&lt;/li&gt;</span></span>
-<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;selenium/standalone-firefox:latest&lt;/strong&gt;: This is the Docker image name and tag. It specifies the image to use for creating the container. Here, we are using the selenium/standalone-firefox image. The :latest tag indicates that it's using the latest version of the image.&lt;/li&gt;</span></span>
-<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;/ul&gt;</span></span>
-<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a><span class="in">  &lt;/div&gt;</span></span>
-<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;/div&gt;</span></span>
-<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;br&gt;</span></span>
-<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>We have now managed to complete all preparations so that the web scraping can begin. But, before we can control our web scraper in R, we always need to make sure that the Docker container with the Selenium image is running.</span>
-<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a><span class="fu">## Start (and stop) the Selenium Docker container</span></span>
-<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>To know whether our Docker container with Selenium is running, we should get an overview of all active Docker containers. To get an overview of all running containers, use this command in the terminal:</span>
-<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span>
-<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>If you also want to see containers that are not active at the moment but ran in the past, use the command:</span>
-<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span></span>
-<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>The second command comes in really handy if you want to start a container that you have already used in the past. Then you can simply copy the ID of the desired container from the overview of already used containers and then restart the old container with the following command:</span>
-<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> start <span class="op">&lt;</span>paste here the ID of the desired container<span class="op">&gt;</span></span>
-<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>::: {#downloads .callout-tip}</span>
-<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stopping a container</span></span>
-<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>I advise you to stop the container after you finish the scraping. A running container requires computing power from your system and may cause other processes on the system to slow down. </span>
-<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>To stop the container, use the command:</span>
-<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
-<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop <span class="op">&lt;</span>ID of running container<span class="op">&gt;</span></span>
-<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a><span class="fu">## Control the scraper in R </span></span>
-<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>Once our Docker container with Selenium is running, we can start programming our web scraper in R. To do so, we use the R package *selenium*, which you can install as usual with ```install.packages(“selenium”)``` in R. This package contains numerous functions with which we can control the behavior of the automated browser. Explaining every function would probably require a separate blog entry - so I will only give a rough overview of the most important functions here: </span>
-<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>SeleniumSession<span class="sc">$</span><span class="fu">new</span>(<span class="at">browser =</span> <span class="st">"firefox"</span>) <span class="ot">-&gt;</span> object <span class="co"># starts the automated browser (here we need to assign the output of the function to an R object which we will use to address the browser in further instructions) </span></span>
-<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">navigate</span>(<span class="st">"insert here an URL"</span>) <span class="co"># navigates the browser to an URL</span></span>
-<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span>find_element <span class="co"># helps us to address a specific element on a webpage (for example with an XPATH)</span></span>
-<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">get_page_source</span>() <span class="co"># retrieves the source code of the webpage</span></span>
-<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>::: {#downloads .callout-tip}</span>
-<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a><span class="fu">## Listen on ports to see what our scraper is doing</span></span>
-<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>In most scraping projects, the automated browser has to click through various elements or make inputs at specific points on the website. Therefore, it is helpful to see how the automated browser navigates through a site so that we can see potential barriers and take them into account when programming the scraper. The great thing about Selenium is that it comes with a built-in VNC that allows us to do just that. All we need to do is type the following URL into a browser:</span>
-<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;http://localhost:7900/?autoconnect=1&amp;resize=scale&amp;password=secret&gt;</span> </span>
-<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>In addition, we can obtain an overview of the active automated browsers when listening on port 4444. This can be interesting if you want to run several scrapers simultaneously. To listen on port 4444, type in your browser:</span>
-<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;http://localhost:4444&gt;</span></span>
-<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>If you have any questions or feedback about this blog post, please feel free to send me an email. Otherwise, I wish you some happy scraping!</span>
+<div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "How to set up a web scraping environment with R and Selenium on Ubuntu"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-05-23</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Learn in this tutorial how to create a simple and beginner-friendly web scraping environment with Selenium and R on Ubuntu"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "img/teaser_img_scraping-tutorial.png"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - R</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">  - Web scraping</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - Linux</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="an">resources:</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - "img/*"</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">  html: </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">    shift-heading-level-by: 1</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> left</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">  eval: false</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>()</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preface: Required software</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>Whenever we want to do something great with a computer, we should have an operating system installed on it. In this tutorial, I use Ubuntu. I assume that some steps of my tutorial can also be transferred to other (especially Unix-based) operating systems. However, since I have not tried my tutorial on another operating system, I can only “guarantee”^<span class="co">[</span><span class="ot">If any problems occur despite my “guarantee”, plz don't sue me - just [write me an e-mail](mailto:simhe051@student.liu.se) ^^</span><span class="co">]</span> that my instructions will work for Ubuntu (I am using 22.04).</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>Apart from an operating system, you also need an installation of R and the Docker Engine for Ubuntu. For writing code in R, I also recommend using a suitable IDE such as RStudio. If you already have these installed on your system, you can get started right away and <span class="co">[</span><span class="ot">pull a Docker image from Selenium</span><span class="co">](index.html#pull-docker-image-of-selenium)</span>.</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>If you don't have R installed yet, you can install it from one of the <span class="co">[</span><span class="ot">CRAN mirrors in your country</span><span class="co">](https://cran.r-project.org/mirrors.html)</span>. You can install RStudio <span class="co">[</span><span class="ot">here</span><span class="co">](https://posit.co/download/rstudio-desktop/)</span>. To install the Docker Engine on your machine, follow the instructions on the <span class="co">[</span><span class="ot">docker website</span><span class="co">](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)</span>. Simply copy the code given on the page into a terminal window and you should be good to go.</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>After you have installed all the necessary software, we can move on to the main tool we will use to automate our browser: Selenium.</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Pull docker image of Selenium</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>Selenium is a software with which we can automate a browser. Many of the functions that Selenium contains are therefore very helpful for scraping content from a website. In this tutorial, we will not install Selenium directly on our system but run an image of Selenium within a Docker container.</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>To use Selenium within a container, we first have to pull an image of it in the Docker Engine. Depending on which browser you want to use, you can pull different versions for different browsers. Standalones are available for <span class="co">[</span><span class="ot">Firefox</span><span class="co">](https://hub.docker.com/r/selenium/standalone-firefox)</span>, <span class="co">[</span><span class="ot">Chrome</span><span class="co">](https://hub.docker.com/r/selenium/standalone-chrome)</span>, and <span class="co">[</span><span class="ot">Edge</span><span class="co">](https://hub.docker.com/r/selenium/standalone-edge)</span>.</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>Since I prefer to use Firefox, I’ll install a version that “uses” Firefox. With the following command in the terminal, you can pull the image:</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> pull selenium/standalone-firefox </span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>::: {#downloads .callout-tip}</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Issues with pulling the image?</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>When I first tried to pull the image of Selenium, I got the error message: denied while trying to connect to the Docker daemon socket at unix</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>This error usually occurs when the user who runs the command to pull the image doesn't have the necessary permissions to access the Docker daemon.</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>Follow these steps to fix this problem permanently:</span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Add your user to the Docker group, which grants the user permission to interact with the Docker daemon. You can do this with the following command:</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-aG</span> docker <span class="va">$USER</span> </span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>After adding your user to the Docker group, you can run the following command to apply the changes to the current session: </span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a><span class="ex">newgrp</span> docker</span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>After logging back in, you can verify that your user has access to Docker by running a Docker command without sudo, such as: </span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Try again to pull the docker image</span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Set up a Docker container with Selenium</span></span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a>After we have successfully pulled the Selenium image, we can now create a Docker container in which we run Selenium. To do so, use the following command in the terminal:</span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">-p</span> 4444:4444 <span class="at">-p</span> 7900:7900 <span class="at">--shm-size</span><span class="op">=</span><span class="st">"2g"</span> selenium/standalone-firefox:latest </span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a>This command creates and starts a new Docker container based on the latest selenium/standalone-firefox image. </span>
+<span id="cb11-99"><a href="#cb11-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-100"><a href="#cb11-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;a data-bs-toggle="collapse" data-bs-target="#collapseElement" aria-expanded="false" aria-controls="collapseElement"&gt;</span></span>
+<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a><span class="in"> &lt;b&gt;Are you interested in what all the elements of this command mean? Click here to deconstruct it.&lt;/b&gt;</span></span>
+<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;/a&gt; &lt;br&gt;</span></span>
+<span id="cb11-104"><a href="#cb11-104" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;div class="collapse" id="collapseElement"&gt;</span></span>
+<span id="cb11-105"><a href="#cb11-105" aria-hidden="true" tabindex="-1"></a><span class="in">  &lt;div class="card card-body"&gt;</span></span>
+<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;ul&gt;</span></span>
+<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;docker run&lt;/strong&gt;: This is the command used to create and start a new Docker container based on a specified Docker image&lt;/li&gt;</span></span>
+<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;-d&lt;/strong&gt;: This activates the "detached mode." It tells Docker to run the container in the background and print the container ID&lt;/li&gt;</span></span>
+<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;-p 4444:4444&lt;/strong&gt;: This option maps port 4444 on the host machine to port 4444 inside the Docker container. This allows communication with the Selenium server from outside the container&lt;/li&gt;</span></span>
+<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;-p 7900:7900&lt;/strong&gt;: Similar to the previous option, this maps port 7900 on the host machine to port 7900 inside the Docker container. This port is used for Virtual Network Computing (VNC), which later allows us to see what our web scraper sees when navigating the Internet&lt;/li&gt;</span></span>
+<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;--shm-size="2g"&lt;/strong&gt;: This option sets the size of the shared memory segment for the container. In this case, it's set to 2 gigabytes (2g)&lt;/li&gt;</span></span>
+<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a><span class="in">    &lt;li&gt;&lt;strong&gt;selenium/standalone-firefox:latest&lt;/strong&gt;: This is the Docker image name and tag. It specifies the image to use for creating the container. Here, we are using the selenium/standalone-firefox image. The :latest tag indicates that it's using the latest version of the image.&lt;/li&gt;</span></span>
+<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;/ul&gt;</span></span>
+<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a><span class="in">  &lt;/div&gt;</span></span>
+<span id="cb11-115"><a href="#cb11-115" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;/div&gt;</span></span>
+<span id="cb11-116"><a href="#cb11-116" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;br&gt;</span></span>
+<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a>We have now managed to complete all preparations so that the web scraping can begin. But, before we can control our web scraper in R, we always need to make sure that the Docker container with the Selenium image is running.</span>
+<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## Start (and stop) the Selenium Docker container</span></span>
+<span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-123"><a href="#cb11-123" aria-hidden="true" tabindex="-1"></a>To know whether our Docker container with Selenium is running, we should get an overview of all active Docker containers. To get an overview of all running containers, use this command in the terminal:</span>
+<span id="cb11-124"><a href="#cb11-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-127"><a href="#cb11-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-128"><a href="#cb11-128" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span>
+<span id="cb11-129"><a href="#cb11-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-131"><a href="#cb11-131" aria-hidden="true" tabindex="-1"></a>If you also want to see containers that are not active at the moment but ran in the past, use the command:</span>
+<span id="cb11-132"><a href="#cb11-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-135"><a href="#cb11-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-136"><a href="#cb11-136" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span></span>
+<span id="cb11-137"><a href="#cb11-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-138"><a href="#cb11-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-139"><a href="#cb11-139" aria-hidden="true" tabindex="-1"></a>The second command comes in really handy if you want to start a container that you have already used in the past. Then you can simply copy the ID of the desired container from the overview of already used containers and then restart the old container with the following command:</span>
+<span id="cb11-140"><a href="#cb11-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-143"><a href="#cb11-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-144"><a href="#cb11-144" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> start <span class="op">&lt;</span>paste here the ID of the desired container<span class="op">&gt;</span></span>
+<span id="cb11-145"><a href="#cb11-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-146"><a href="#cb11-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-147"><a href="#cb11-147" aria-hidden="true" tabindex="-1"></a>::: {#downloads .callout-tip}</span>
+<span id="cb11-148"><a href="#cb11-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stopping a container</span></span>
+<span id="cb11-149"><a href="#cb11-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-150"><a href="#cb11-150" aria-hidden="true" tabindex="-1"></a>I advise you to stop the container after you finish the scraping. A running container requires computing power from your system and may cause other processes on the system to slow down. </span>
+<span id="cb11-151"><a href="#cb11-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-152"><a href="#cb11-152" aria-hidden="true" tabindex="-1"></a>To stop the container, use the command:</span>
+<span id="cb11-153"><a href="#cb11-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-156"><a href="#cb11-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash}</span></span>
+<span id="cb11-157"><a href="#cb11-157" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop <span class="op">&lt;</span>ID of running container<span class="op">&gt;</span></span>
+<span id="cb11-158"><a href="#cb11-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## Control the scraper in R </span></span>
+<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>Once our Docker container with Selenium is running, we can start programming our web scraper in R. To do so, we use the R package *selenium*, which you can install as usual with ```install.packages(“selenium”)``` in R. This package contains numerous functions with which we can control the behavior of the automated browser. Explaining every function would probably require a separate blog entry - so I will only give a rough overview of the most important functions here: </span>
+<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-167"><a href="#cb11-167" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-168"><a href="#cb11-168" aria-hidden="true" tabindex="-1"></a>SeleniumSession<span class="sc">$</span><span class="fu">new</span>(<span class="at">browser =</span> <span class="st">"firefox"</span>) <span class="ot">-&gt;</span> object <span class="co"># starts the automated browser (here we need to assign the output of the function to an R object which we will use to address the browser in further instructions) </span></span>
+<span id="cb11-169"><a href="#cb11-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-170"><a href="#cb11-170" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">navigate</span>(<span class="st">"insert here an URL"</span>) <span class="co"># navigates the browser to an URL</span></span>
+<span id="cb11-171"><a href="#cb11-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-172"><a href="#cb11-172" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span>find_element <span class="co"># helps us to address a specific element on a webpage (for example with an XPATH)</span></span>
+<span id="cb11-173"><a href="#cb11-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-174"><a href="#cb11-174" aria-hidden="true" tabindex="-1"></a>object<span class="sc">$</span><span class="fu">get_page_source</span>() <span class="co"># retrieves the source code of the webpage</span></span>
+<span id="cb11-175"><a href="#cb11-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-176"><a href="#cb11-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-177"><a href="#cb11-177" aria-hidden="true" tabindex="-1"></a>::: {#downloads .callout-tip}</span>
+<span id="cb11-178"><a href="#cb11-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Listen on ports to see what our scraper is doing</span></span>
+<span id="cb11-179"><a href="#cb11-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-180"><a href="#cb11-180" aria-hidden="true" tabindex="-1"></a>In most scraping projects, the automated browser has to click through various elements or make inputs at specific points on the website. Therefore, it is helpful to see how the automated browser navigates through a site so that we can see potential barriers and take them into account when programming the scraper. The great thing about Selenium is that it comes with a built-in VNC that allows us to do just that. All we need to do is type the following URL into a browser:</span>
+<span id="cb11-181"><a href="#cb11-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-182"><a href="#cb11-182" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;http://localhost:7900/?autoconnect=1&amp;resize=scale&amp;password=secret&gt;</span> </span>
+<span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a>In addition, we can obtain an overview of the active automated browsers when listening on port 4444. This can be interesting if you want to run several scrapers simultaneously. To listen on port 4444, type in your browser:</span>
+<span id="cb11-185"><a href="#cb11-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-186"><a href="#cb11-186" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;http://localhost:4444&gt;</span></span>
+<span id="cb11-187"><a href="#cb11-187" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-188"><a href="#cb11-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-189"><a href="#cb11-189" aria-hidden="true" tabindex="-1"></a>If you have any questions or feedback about this blog post, please feel free to <span class="co">[</span><span class="ot">send me an email</span><span class="co">](mailto:simhe051@student.liu.se)</span>. Otherwise, I wish you some happy scraping!</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

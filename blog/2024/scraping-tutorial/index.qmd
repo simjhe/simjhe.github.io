@@ -60,9 +60,17 @@ Follow these steps to fix this problem permanently:
 sudo usermod -aG docker $USER 
 ```
 
-2.  After adding your user to the Docker group, you can run the following command to apply the changes to the current session: newgrp docker
+2.  After adding your user to the Docker group, you can run the following command to apply the changes to the current session: 
 
-3.  After logging back in, you can verify that your user has access to Docker by running a Docker command without sudo, such as: docker ps
+```{bash}
+newgrp docker
+```
+
+3.  After logging back in, you can verify that your user has access to Docker by running a Docker command without sudo, such as: 
+
+```{bash}
+docker ps
+```
 
 4.  Try again to pull the docker image
 :::
@@ -156,4 +164,4 @@ In addition, we can obtain an overview of the active automated browsers when lis
 <http://localhost:4444>
 :::
 
-If you have any questions or feedback about this blog post, please feel free to send me an email. Otherwise, I wish you some happy scraping!
+If you have any questions or feedback about this blog post, please feel free to [send me an email](mailto:simhe051@student.liu.se). Otherwise, I wish you some happy scraping!
