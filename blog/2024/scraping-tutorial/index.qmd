@@ -4,9 +4,9 @@ date: 2024-05-23
 description: "Learn in this tutorial how to create a simple and beginner-friendly web scraping environment with Selenium and R on Ubuntu"
 image: "img/teaser_img_scraping-tutorial.png"
 categories:
-  - R
   - Web scraping
   - Linux
+  - R
 resources:
   - "img/*"
 format:

@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Simon Herrmann">
+<meta name="description" content="In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful">
+
+<title>Simon Herrmann - The magic of Fixed Effects regression</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: #111110;
+      }
+</style>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="floating nav-fixed slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Simon Herrmann</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../cv/index.html"> 
+<span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default blog-post page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">The magic of Fixed Effects regression</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                  <div>
+        <div class="description">
+          In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Econometrics</div>
+                <div class="quarto-category">Statistical methods</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://simjhe.github.io/">Simon Herrmann</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Monday, September 2, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#why-all-this" id="toc-why-all-this" class="nav-link active" data-scroll-target="#why-all-this">Why all this?</a></li>
+  <li><a href="#fixed-effects-regression-in-a-nutshell" id="toc-fixed-effects-regression-in-a-nutshell" class="nav-link" data-scroll-target="#fixed-effects-regression-in-a-nutshell">Fixed Effects regression in a nutshell</a></li>
+  <li><a href="#how-does-a-fixed-effects-regression-work" id="toc-how-does-a-fixed-effects-regression-work" class="nav-link" data-scroll-target="#how-does-a-fixed-effects-regression-work">How does a Fixed Effects regression work?</a>
+  <ul class="collapse">
+  <li><a href="#statistical-estimation-by-adding-a-dummy-variable-for-each-unit" id="toc-statistical-estimation-by-adding-a-dummy-variable-for-each-unit" class="nav-link" data-scroll-target="#statistical-estimation-by-adding-a-dummy-variable-for-each-unit">Statistical estimation by adding a dummy variable for each unit</a></li>
+  <li><a href="#statistical-estimation-with-demeaning" id="toc-statistical-estimation-with-demeaning" class="nav-link" data-scroll-target="#statistical-estimation-with-demeaning">Statistical estimation with demeaning</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+
+<section id="why-all-this" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="why-all-this">Why all this?</h2>
+<p>In various sciences, researchers try to find causal relationships between two or more variables to answer their research questions. In environmental sciences and economics, for example, one current question is whether carbon prices have a causal influence on an economy’s greenhouse gas (GHG) emissions. To answer a question like this, usually a statistical model is set up to try to quantify the relationship between the predictors <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> and the dependent variable(s) <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;the variable from which an effect originates, e.g., the carbon price</p></div><div id="fn2"><p><sup>2</sup>&nbsp;the variable that is impacted by the effect, e.g., GHG emissions</p></div></div><p>However, even if a statistical relationship is found, it is difficult to directly assume a causal relationship. Often there are numerous (potentially unobserved) variables that influence both the predictors and the dependent variable(s). Those variables are called confounders since they possibly confound a causal relationship. In the example from above, a country’s cultural conditions, for example, could be confounders as they might influence the carbon price as well as the GHG emissions.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why could cultural factors in a country be confounding here?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in CO2 emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between CO2 prices and CO2 anymore.</p>
+</div>
+</div>
+<p>To minimize the influence of such confounders, statisticians and social scientists have developed various methods. One of them is Fixed Effects regression.</p>
+</section>
+<section id="fixed-effects-regression-in-a-nutshell" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="fixed-effects-regression-in-a-nutshell">Fixed Effects regression in a nutshell</h2>
+<p>Fixed Effects regression is a regression model with which it is relatively easy to control for time-constant confounders. This means we can eliminate the impact of any time-stable variable that might influence our main effect of interest. The beautiful thing here is that we eliminate all time-constant confounders – regardless of whether we observed them or not. In our example, this means that we don’t have to care about any time-constant country characteristics <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that could in any way confound the relationship between carbon prices and GHG emissions. We achieve this by only looking at the variation of the data within a unit of analysis.</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;There are a lot! Just think about the different political systems, cultural and economic conditions, …</p></div></div><p>In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore only possible if we have several observations of a unit (e.g., a country) – i.e., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood.</p>
+</section>
+<section id="how-does-a-fixed-effects-regression-work" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="how-does-a-fixed-effects-regression-work">How does a Fixed Effects regression work?</h2>
+<p>As already mentioned, a Fixed Effects regression can be performed whenever we have repeated observations of or within the same unit (e.g., individuals, countries, …). In a dataset, this could look like this, for example:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>       Country Code Year Carbon_price Emission_per_capita
+1  Switzerland  CHE 2008     2.823883            5.852853
+2  Switzerland  CHE 2009     2.829404            5.628064
+3  Switzerland  CHE 2010     8.857406            5.758217
+4  Switzerland  CHE 2011     7.716105            5.180272
+5  Switzerland  CHE 2012     8.226921            5.283896
+6  Switzerland  CHE 2013     8.532256            5.338836
+7  Switzerland  CHE 2014    11.974738            4.791107
+8  Switzerland  CHE 2015    13.267141            4.676024
+9  Switzerland  CHE 2016    19.253305            4.679219
+10 Switzerland  CHE 2017    18.702318            4.516505</code></pre>
+</div>
+</div>
+<p>Here we see that we have repeated measurements of the predictor <em>carbon price</em> and the dependent variable <em>emissions</em> from Switzerland for several years.</p>
+<p>With such a data set, a Fixed Effects regression model could now be set up, which could best be mathematically described with this equation:</p>
+<p><span class="math display">\[
+Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}
+\]</span> Let’s break this formula down:</p>
+<ul>
+<li><span class="math inline">\(Y\)</span> stands for the value of the dependent variable for unit <span class="math inline">\(i\)</span> at time point <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(X\)</span> is the vector of all time-variant predictors <a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+<li><span class="math inline">\(\beta\)</span> is the matrix of the corresponding parameters of the predictors</li>
+<li><span class="math inline">\(\alpha_i\)</span> represents unobserved time-stable individual effects - that’s why the subscript <span class="math inline">\(t\)</span> is missing here</li>
+<li>The formula also contains an error term <span class="math inline">\(\epsilon_{it}\)</span> that varies over time and across units</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;in case we have just have one predictor, there is no vector or matrix needed</p></div></div><p>In our example, which includes only the predictor <em>carbon price</em>, the formula would be as follows:</p>
+<p><span class="math display">\[
+emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}
+\]</span></p>
+<p>With our model now established, the next step is to estimate the coefficient(s) <span class="math inline">\(\beta\)</span> to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: <em>demeaning</em> and adding a <em>dummy variable</em> for each unit. This will also help us gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders.</p>
+<section id="statistical-estimation-by-adding-a-dummy-variable-for-each-unit" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="statistical-estimation-by-adding-a-dummy-variable-for-each-unit">Statistical estimation by adding a dummy variable for each unit</h3>
+<p>One of the numerically simplest variants for estimating the model is to construct a dummy variable for each unit (e.g., individuals, countries) <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. When doing this, each unit receives its own intercept. Each intercept then captures all the time-stable characteristics of that unit, meaning any systematic differences between units are absorbed by the individual intercepts.</p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;technically, we should omit the first unit to avoid multicollinearity</p></div></div><p>Let’s take look at the relationship of carbon prices and GHG emissions in three selected countries of our dataset. For illustrative reasons, I select data from Switzerland, Denmark, and Norway since 2007. When running a linear regression over the data without adding any country-level dummy variables, the results look something like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The data is spread out and – based on our regression line – we see a positive relationship between carbon prices and GHG emissions. If we now add a dummy variable for Switzerland, Denmark, and Norway, the following happens:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see that each country has now its own intercept. Each intercept captures all time-stable characteristics of the respective country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we controlled for time-constant confounders – which in our example has visibly led to different results than an OLS regression.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;Pretty cool, right?</p></div></div><p>In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.</p>
+</section>
+<section id="statistical-estimation-with-demeaning" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="statistical-estimation-with-demeaning">Statistical estimation with demeaning</h3>
+<p>Another way to extract the within-unit variation and control for time-stable confounders is <em>demeaning</em> or the <em>within transformation</em>. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">&amp;</span> Year <span class="sc">&gt;</span> <span class="dv">2007</span> <span class="sc">&amp;</span> Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Country Code Year Carbon_price Emission_per_capita
+1  Switzerland  CHE 2008  -10.1669691          0.96726094
+2  Switzerland  CHE 2009  -10.1614481          0.74247134
+3  Switzerland  CHE 2010   -4.1334457          0.87262494
+4  Switzerland  CHE 2011   -5.2747467          0.29467964
+5  Switzerland  CHE 2012   -4.7639307          0.39830404
+6  Switzerland  CHE 2013   -4.4585957          0.45324334
+7  Switzerland  CHE 2014   -1.0161137         -0.09448536
+8  Switzerland  CHE 2015    0.2762893         -0.20956836
+9  Switzerland  CHE 2016    6.2624533         -0.20637336
+10 Switzerland  CHE 2017    5.7114663         -0.36908716</code></pre>
+</div>
+</div>
+<p>To enhance our understanding of how demeaning eliminates time-stable confounders we can also revisit our equations from above. Let’s take a look at our Fixed Effects equation – where <span class="math inline">\(\alpha_i\)</span> stands for our time-constant <a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> confounders:</p>
+<div class="no-row-height column-margin column-container"><div id="fn7"><p><sup>7</sup>&nbsp;note the missing t in the subscript</p></div></div><p><span class="math display">\[
+Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}
+\]</span></p>
+<p>By demeaning, each observation at all time-points <span class="math inline">\(t\)</span> is subtracted from the mean of all observations of unit <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[
+Y_{it} = \alpha_i - \bar \alpha_i + \beta (X_{it} - \bar X_{i}) + \epsilon_{it} - \bar \epsilon_{i}
+\]</span></p>
+<p>Since <span class="math inline">\(\alpha_i\)</span> is time-constant and has thus the same value at different time points, its mean <span class="math inline">\(\bar \alpha\)</span> is identical to <span class="math inline">\(\alpha_i\)</span> – which eliminates <span class="math inline">\(\alpha_i\)</span> from our equation. From this follows a transformed equation – in which our time-stable confounders have been removed:</p>
+<p><span class="math display">\[
+\ddot{Y_{it}}= \ddot{\beta X_{it}} + \ddot{\epsilon_{it}}
+\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+More thoughts on this?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For me, this process illustrates well what the basic idea of a Fixed Effects regression is. We know that time-stable variables of a unit do not change over time. If we perform demeaning and only look at the variation within a unit (where these possible variables remain stable over time) we don’t have to worry about these factors affecting our causal relationship – as they do not vary over time.</p>
+</div>
+</div>
+<p>After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is successfully completed.</p>
+
+
+<!-- -->
+
+</section>
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "The magic of Fixed Effects regression"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-09-02</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "img/teaser-img_fixed-effects.png"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - Econometrics</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">  - Statistical methods</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - R</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="an">resources:</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - "img/*"</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">  html: </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">    shift-heading-level-by: 0</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> left</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">  eval: true</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>()</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>df_price <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/emissions-weighted-carbon-price.csv"</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>df_emissions <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/co-emissions-per-capita.csv"</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># packages</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># only look for data in 2021</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>df_price <span class="ot">&lt;-</span> df_price <span class="sc">|&gt;</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Carbon_price =</span> Average.price.on.emissions.covered.by.a.carbon.tax..weighted.by.the.share.of.the.country.s.CO..emissions,</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">Country =</span> Entity)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>df_emissions <span class="ot">&lt;-</span> df_emissions <span class="sc">|&gt;</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Emission_per_capita =</span> Annual.CO..emissions..per.capita.,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">Country =</span> Entity) <span class="sc">|&gt;</span> </span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Code)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="co"># join data</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>df_joined <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(<span class="at">x =</span> df_price, <span class="at">y =</span> df_emissions, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Country"</span>, <span class="st">"Year"</span>))</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why all this?</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>In various sciences, researchers try to find causal relationships between two or more variables to answer their research questions. In environmental sciences and economics, for example, one current question is whether carbon prices have a causal influence on an economy’s greenhouse gas (GHG) emissions. To answer a question like this, usually a statistical model is set up to try to quantify the relationship between the predictors ^<span class="co">[</span><span class="ot">the variable from which an effect originates, e.g., the carbon price</span><span class="co">]</span> and the dependent variable(s) ^<span class="co">[</span><span class="ot">the variable that is impacted by the effect, e.g., GHG emissions</span><span class="co">]</span>. </span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>However, even if a statistical relationship is found, it is difficult to directly assume a causal relationship. Often there are numerous (potentially unobserved) variables that influence both the predictors and the dependent variable(s). Those variables are called confounders since they possibly confound a causal relationship. In the example from above, a country’s cultural conditions, for example, could be confounders as they might influence the carbon price as well as the GHG emissions. </span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why could cultural factors in a country be confounding here?</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in CO2 emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between CO2 prices and CO2 anymore.</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>To minimize the influence of such confounders, statisticians and social scientists have developed various methods. One of them is Fixed Effects regression.</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixed Effects regression in a nutshell</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>Fixed Effects regression is a regression model with which it is relatively easy to control for time-constant confounders. This means we can eliminate the impact of any time-stable variable that might influence our main effect of interest. The beautiful thing here is that we eliminate all time-constant confounders – regardless of whether we observed them or not. In our example, this means that we don’t have to care about any time-constant country characteristics ^<span class="co">[</span><span class="ot">There are a lot! Just think about the different political systems, cultural and economic conditions, …</span><span class="co">]</span> that could in any way confound the relationship between carbon prices and GHG emissions. We achieve this by only looking at the variation of the data within a unit of analysis. </span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore only possible if we have several observations of a unit (e.g., a country) – i.e., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood. </span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## How does a Fixed Effects regression work?</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>As already mentioned, a Fixed Effects regression can be performed whenever we have repeated observations of or within the same unit (e.g., individuals, countries, ...). In a dataset, this could look like this, for example:</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span>, Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>Here we see that we have repeated measurements of the predictor *carbon price* and the dependent variable *emissions* from Switzerland for several years.</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>With such a data set, a Fixed Effects regression model could now be set up, which could best be mathematically described with this equation:</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>Let's break this formula down:</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$Y$ stands for the value of the dependent variable for unit $i$ at time point $t$</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$X$ is the vector of all time-variant predictors ^<span class="co">[</span><span class="ot">in case we have just have one predictor, there is no vector or matrix needed</span><span class="co">]</span></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\beta$ is the matrix of the corresponding parameters of the predictors</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\alpha_i$ represents unobserved time-stable individual effects - that’s why the subscript $t$ is missing here</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The formula also contains an error term $\epsilon_{it}$ that varies over time and across units</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>In our example, which includes only the predictor *carbon price*, the formula would be as follows:</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>With our model now established, the next step is to estimate the coefficient(s) $\beta$ to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: *demeaning* and adding a *dummy variable* for each unit. This will also help us gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders. </span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical estimation by adding a dummy variable for each unit</span></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>One of the numerically simplest variants for estimating the model is to construct a dummy variable for each unit (e.g., individuals, countries) ^<span class="co">[</span><span class="ot">technically, we should omit the first unit to avoid multicollinearity</span><span class="co">]</span>. When doing this, each unit receives its own intercept. Each intercept then captures all the time-stable characteristics of that unit, meaning any systematic differences between units are absorbed by the individual intercepts. </span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>Let’s take look at the relationship of carbon prices and GHG emissions in three selected countries of our dataset. For illustrative reasons, I select data from Switzerland, Denmark, and Norway since 2007. When running a linear regression over the data without adding any country-level dummy variables, the results look something like this:</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">|</span> Code <span class="sc">==</span> <span class="st">"DNK"</span> <span class="sc">|</span> Code <span class="sc">==</span> <span class="st">"NOR"</span>) <span class="sc">&amp;</span> Year <span class="sc">&gt;=</span> <span class="dv">2007</span>) <span class="ot">-&gt;</span> df_dummies</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(Emission_per_capita <span class="sc">~</span> Carbon_price <span class="sc">+</span> <span class="fu">factor</span>(Code), <span class="at">data =</span> df_dummies) <span class="ot">-&gt;</span> lm_dummies</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="ot">&lt;-</span> <span class="fu">cbind</span>(df_dummies, <span class="at">pred =</span> <span class="fu">predict</span>(lm_dummies))</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="sc">|&gt;</span> </span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Carbon_price,</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> Emission_per_capita)) <span class="sc">+</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">se =</span> F) <span class="sc">+</span></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Carbon prices"</span>,</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"GHG emissions per capita"</span>)</span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>The data is spread out and – based on our regression line – we see a positive relationship between carbon prices and GHG emissions. If we now add a dummy variable for Switzerland, Denmark, and Norway, the following happens: </span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="sc">|&gt;</span> </span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Carbon_price,</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> Emission_per_capita,</span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>                       <span class="at">colour =</span> Country)) <span class="sc">+</span></span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">se =</span> F, <span class="at">fullrange =</span> T,</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>              <span class="at">mapping =</span> (<span class="fu">aes</span>(<span class="at">y =</span> pred))) <span class="sc">+</span></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Carbon prices"</span>,</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"GHG emissions per capita"</span>)</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>We see that each country has now its own intercept. Each intercept captures all time-stable characteristics of the respective country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we controlled for time-constant confounders – which in our example has visibly led to different results than an OLS regression.^<span class="co">[</span><span class="ot">Pretty cool, right?</span><span class="co">]</span></span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a>In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.</span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical estimation with demeaning</span></span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>Another way to extract the within-unit variation and control for time-stable confounders is *demeaning* or the *within transformation*. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation:</span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">&amp;</span> Year <span class="sc">&gt;</span> <span class="dv">2007</span> <span class="sc">&amp;</span> Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price),</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>To enhance our understanding of how demeaning eliminates time-stable confounders we can also revisit our equations from above. Let’s take a look at our Fixed Effects equation – where $\alpha_i$ stands for our time-constant ^<span class="co">[</span><span class="ot">note the missing t in the subscript</span><span class="co">]</span> confounders:</span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>By demeaning, each observation at all time-points $t$ is subtracted from the mean of all observations of unit $i$:</span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i - \bar \alpha_i + \beta (X_{it} - \bar X_{i}) + \epsilon_{it} - \bar \epsilon_{i}</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>Since $\alpha_i$ is time-constant and has thus the same value at different time points, its mean $\bar \alpha$ is identical to $\alpha_i$ – which eliminates $\alpha_i$ from our equation. From this follows a transformed equation – in which our time-stable confounders have been removed:</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a>\ddot{Y_{it}}= \ddot{\beta X_{it}} + \ddot{\epsilon_{it}}</span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## More thoughts on this?</span></span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>For me, this process illustrates well what the basic idea of a Fixed Effects regression is. We know that time-stable variables of a unit do not change over time. If we perform demeaning and only look at the variation within a unit (where these possible variables remain stable over time) we don't have to worry about these factors affecting our causal relationship – as they do not vary over time. </span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is successfully completed.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
