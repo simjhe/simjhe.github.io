@@ -1,7 +1,7 @@
 ---
 title: "The magic of Fixed Effects regression"
 date: 2024-09-02
-description: "In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful"
+description: "In this article I give a short introduction to Fixed Effects regression. I aim to provide an intuition for how it works and the scenarios in which it is most useful"
 image: "img/teaser-img_fixed-effects.png"
 categories:
   - Econometrics
@@ -52,7 +52,7 @@ However, even if a statistical relationship is found, it is difficult to directl
 
 ::: {.callout-tip}
 ## Why could cultural factors in a country be confounding here?
-Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in CO2 emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between CO2 prices and CO2 anymore.
+Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in GHG emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between carbon prices and GHG emissions anymore.
 :::
 
 To minimize the influence of such confounders, statisticians and social scientists have developed various methods. One of them is Fixed Effects regression.
@@ -61,21 +61,23 @@ To minimize the influence of such confounders, statisticians and social scientis
 
 Fixed Effects regression is a regression model with which it is relatively easy to control for time-constant confounders. This means we can eliminate the impact of any time-stable variable that might influence our main effect of interest. The beautiful thing here is that we eliminate all time-constant confounders – regardless of whether we observed them or not. In our example, this means that we don’t have to care about any time-constant country characteristics ^[There are a lot! Just think about the different political systems, cultural and economic conditions, …] that could in any way confound the relationship between carbon prices and GHG emissions. We achieve this by only looking at the variation of the data within a unit of analysis. 
 
-In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore only possible if we have several observations of a unit (e.g., a country) – i.e., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood. 
+In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore especially useful if we have several observations of a unit (e.g., a country) – e.g., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood. 
 
 ## How does a Fixed Effects regression work?
 
-As already mentioned, a Fixed Effects regression can be performed whenever we have repeated observations of or within the same unit (e.g., individuals, countries, ...). In a dataset, this could look like this, for example:
+As already mentioned, a Fixed Effects regression is typicallyn done whenever we have repeated observations of or within the same unit (e.g., individuals, countries, ...). In a dataset, this could look like this, for example:
 
 ```{r}
 #| output: true
 #| echo: false
 df_joined |> 
-  filter(Code == "CHE", Carbon_price > 0) |> 
+  filter(Code == "CHE", Carbon_price > 0) -> df_che
+
+df_che |> 
   head(10)
 ```
 
-Here we see that we have repeated measurements of the predictor *carbon price* and the dependent variable *emissions* from Switzerland for several years.
+Here we see that we have repeated measurements of the predictor *carbon price* and the dependent variable *emissions per capita* from Switzerland for several years.
 
 With such a data set, a Fixed Effects regression model could now be set up, which could best be mathematically described with this equation:
 
@@ -96,19 +98,19 @@ $$
 emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}
 $$
 
-With our model now established, the next step is to estimate the coefficient(s) $\beta$ to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: *demeaning* and adding a *dummy variable* for each unit. This will also help us gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders. 
+With our model now established, the next step is to estimate the coefficient(s) $\beta$ to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: *demeaning* and *adding a dummy variable for each unit*. This will hopefully also help us to gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders. 
 
 ### Statistical estimation by adding a dummy variable for each unit
 
 One of the numerically simplest variants for estimating the model is to construct a dummy variable for each unit (e.g., individuals, countries) ^[technically, we should omit the first unit to avoid multicollinearity]. When doing this, each unit receives its own intercept. Each intercept then captures all the time-stable characteristics of that unit, meaning any systematic differences between units are absorbed by the individual intercepts. 
 
-Let’s take look at the relationship of carbon prices and GHG emissions in three selected countries of our dataset. For illustrative reasons, I select data from Switzerland, Denmark, and Norway since 2007. When running a linear regression over the data without adding any country-level dummy variables, the results look something like this:
+Let’s take look at the relationship of carbon prices and GHG emissions in two selected countries of our dataset. For illustrative reasons, I select data from Switzerland and Denmark since 2007. When running a linear regression without adding any country-level dummy variables, the results look something like this:
 
 ```{r}
 #| output: true
 #| echo: false
 df_joined |> 
-  filter((Code == "CHE" | Code == "DNK" | Code == "NOR") & Year >= 2007) -> df_dummies
+  filter((Code == "CHE" | Code == "DNK") & Year >= 2007) -> df_dummies
 
 lm(Emission_per_capita ~ Carbon_price + factor(Code), data = df_dummies) -> lm_dummies
 
@@ -118,12 +120,13 @@ df_dummies |>
   ggplot(mapping = aes(x = Carbon_price,
                        y = Emission_per_capita)) +
   geom_point() + 
-  geom_smooth(method='lm', se = F) +
+  geom_smooth(method='lm', se = F, color = "#00ba38") +
   labs(x = "Carbon prices",
-       y = "GHG emissions per capita")
+       y = "GHG emissions per capita") +
+  theme_classic()
 ```
 
-The data is spread out and – based on our regression line – we see a positive relationship between carbon prices and GHG emissions. If we now add a dummy variable for Switzerland, Denmark, and Norway, the following happens: 
+We see one regression line describing our relationship between carbon prices and GHG emissions over all units in our dataset. If we now add a dummy variable for Switzerland and Denmark, the following happens: 
 
 ```{r}
 #| output: true
@@ -136,28 +139,38 @@ df_dummies |>
   geom_smooth(method='lm', se = F, fullrange = T,
               mapping = (aes(y = pred))) +
   labs(x = "Carbon prices",
-       y = "GHG emissions per capita")
+       y = "GHG emissions per capita") +
+  theme_classic()
 ```
 
-We see that each country has now its own intercept. Each intercept captures all time-stable characteristics of the respective country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we controlled for time-constant confounders – which in our example has visibly led to different results than an OLS regression.^[Pretty cool, right?]
+We observe that each country now has its own intercept, which captures all time-stable characteristics specific to that country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we accounted for all time-constant country-specific confounders.
 
 In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.
 
 ### Statistical estimation with demeaning
 
-Another way to extract the within-unit variation and control for time-stable confounders is *demeaning* or the *within transformation*. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation:
+Another way to extract the within-unit variation and control for time-stable confounders is *demeaning* or the *within transformation*. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation. Manually performing this in R could look like this:
+
+```{r}
+#| output: false
+#| echo: true
+df_che |> # data of Switzerland
+  mutate(Carbon_price = Carbon_price - mean(Carbon_price), # demeaning: subtracting mean from observations
+         Emission_per_capita = Emission_per_capita - mean(Emission_per_capita))
+```
+
+The new dataset that results from such a transformation would then look like this:
 
 ```{r}
 #| output: true
-#| echo: true
-df_joined |> 
-  filter(Code == "CHE" & Year > 2007 & Carbon_price > 0) |> 
-  mutate(Carbon_price = Carbon_price - mean(Carbon_price),
+#| echo: false
+df_che |> # data of Switzerland
+  mutate(Carbon_price = Carbon_price - mean(Carbon_price), # demeaning: subtracting mean from observations
          Emission_per_capita = Emission_per_capita - mean(Emission_per_capita)) |> 
-  head(10)
+  head(10) # show first rows of new dataset
 ```
 
-To enhance our understanding of how demeaning eliminates time-stable confounders we can also revisit our equations from above. Let’s take a look at our Fixed Effects equation – where $\alpha_i$ stands for our time-constant ^[note the missing t in the subscript] confounders:
+To enhance our intuition of how demeaning eliminates time-stable confounders, I would also like to revisit our equations from above. Let’s take a look at our basic Fixed Effects equation – where $\alpha_i$ stands for our time-constant ^[note the missing t in the subscript] confounders:
 
 $$
 Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}
@@ -176,8 +189,10 @@ $$
 $$
 
 ::: {.callout-tip}
-## More thoughts on this?
+## More thoughts on this
 For me, this process illustrates well what the basic idea of a Fixed Effects regression is. We know that time-stable variables of a unit do not change over time. If we perform demeaning and only look at the variation within a unit (where these possible variables remain stable over time) we don't have to worry about these factors affecting our causal relationship – as they do not vary over time. 
 :::
 
-After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is successfully completed.
+After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is completed. However, if we want to calculate a Fixed Effects model in R, we will not usually do this manually with the steps described here. There are good packages that do all the work for you and save you a lot of time. I can highly recommend the plm-package. You can find some information about it [here](https://cran.r-project.org/web/packages/plm/vignettes/A_plmPackage.html).
+
+

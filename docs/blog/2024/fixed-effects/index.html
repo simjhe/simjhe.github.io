@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Herrmann">
-<meta name="description" content="In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful">
+<meta name="description" content="In this article I give a short introduction to Fixed Effects regression. I aim to provide an intuition for how it works and the scenarios in which it is most useful">
 
 <title>Simon Herrmann - The magic of Fixed Effects regression</title>
 <style>
@@ -188,7 +188,7 @@ window.Quarto = {
       <div class="quarto-title-block"><div><h1 class="title">The magic of Fixed Effects regression</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
                   <div>
         <div class="description">
-          In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful
+          In this article I give a short introduction to Fixed Effects regression. I aim to provide an intuition for how it works and the scenarios in which it is most useful
         </div>
       </div>
                           <div class="quarto-categories">
@@ -262,7 +262,7 @@ Why could cultural factors in a country be confounding here?
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in CO2 emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between CO2 prices and CO2 anymore.</p>
+<p>Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in GHG emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between carbon prices and GHG emissions anymore.</p>
 </div>
 </div>
 <p>To minimize the influence of such confounders, statisticians and social scientists have developed various methods. One of them is Fixed Effects regression.</p>
@@ -270,11 +270,11 @@ Why could cultural factors in a country be confounding here?
 <section id="fixed-effects-regression-in-a-nutshell" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="fixed-effects-regression-in-a-nutshell">Fixed Effects regression in a nutshell</h2>
 <p>Fixed Effects regression is a regression model with which it is relatively easy to control for time-constant confounders. This means we can eliminate the impact of any time-stable variable that might influence our main effect of interest. The beautiful thing here is that we eliminate all time-constant confounders – regardless of whether we observed them or not. In our example, this means that we don’t have to care about any time-constant country characteristics <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that could in any way confound the relationship between carbon prices and GHG emissions. We achieve this by only looking at the variation of the data within a unit of analysis.</p>
-<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;There are a lot! Just think about the different political systems, cultural and economic conditions, …</p></div></div><p>In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore only possible if we have several observations of a unit (e.g., a country) – i.e., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood.</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;There are a lot! Just think about the different political systems, cultural and economic conditions, …</p></div></div><p>In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore especially useful if we have several observations of a unit (e.g., a country) – e.g., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood.</p>
 </section>
 <section id="how-does-a-fixed-effects-regression-work" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="how-does-a-fixed-effects-regression-work">How does a Fixed Effects regression work?</h2>
-<p>As already mentioned, a Fixed Effects regression can be performed whenever we have repeated observations of or within the same unit (e.g., individuals, countries, …). In a dataset, this could look like this, for example:</p>
+<p>As already mentioned, a Fixed Effects regression is typicallyn done whenever we have repeated observations of or within the same unit (e.g., individuals, countries, …). In a dataset, this could look like this, for example:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>       Country Code Year Carbon_price Emission_per_capita
@@ -290,7 +290,7 @@ Why could cultural factors in a country be confounding here?
 10 Switzerland  CHE 2017    18.702318            4.516505</code></pre>
 </div>
 </div>
-<p>Here we see that we have repeated measurements of the predictor <em>carbon price</em> and the dependent variable <em>emissions</em> from Switzerland for several years.</p>
+<p>Here we see that we have repeated measurements of the predictor <em>carbon price</em> and the dependent variable <em>emissions per capita</em> from Switzerland for several years.</p>
 <p>With such a data set, a Fixed Effects regression model could now be set up, which could best be mathematically described with this equation:</p>
 <p><span class="math display">\[
 Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}
@@ -306,11 +306,11 @@ Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}
 <p><span class="math display">\[
 emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}
 \]</span></p>
-<p>With our model now established, the next step is to estimate the coefficient(s) <span class="math inline">\(\beta\)</span> to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: <em>demeaning</em> and adding a <em>dummy variable</em> for each unit. This will also help us gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders.</p>
+<p>With our model now established, the next step is to estimate the coefficient(s) <span class="math inline">\(\beta\)</span> to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: <em>demeaning</em> and <em>adding a dummy variable for each unit</em>. This will hopefully also help us to gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders.</p>
 <section id="statistical-estimation-by-adding-a-dummy-variable-for-each-unit" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="statistical-estimation-by-adding-a-dummy-variable-for-each-unit">Statistical estimation by adding a dummy variable for each unit</h3>
 <p>One of the numerically simplest variants for estimating the model is to construct a dummy variable for each unit (e.g., individuals, countries) <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. When doing this, each unit receives its own intercept. Each intercept then captures all the time-stable characteristics of that unit, meaning any systematic differences between units are absorbed by the individual intercepts.</p>
-<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;technically, we should omit the first unit to avoid multicollinearity</p></div></div><p>Let’s take look at the relationship of carbon prices and GHG emissions in three selected countries of our dataset. For illustrative reasons, I select data from Switzerland, Denmark, and Norway since 2007. When running a linear regression over the data without adding any country-level dummy variables, the results look something like this:</p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;technically, we should omit the first unit to avoid multicollinearity</p></div></div><p>Let’s take look at the relationship of carbon prices and GHG emissions in two selected countries of our dataset. For illustrative reasons, I select data from Switzerland and Denmark since 2007. When running a linear regression without adding any country-level dummy variables, the results look something like this:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -320,7 +320,7 @@ emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}
 </div>
 </div>
 </div>
-<p>The data is spread out and – based on our regression line – we see a positive relationship between carbon prices and GHG emissions. If we now add a dummy variable for Switzerland, Denmark, and Norway, the following happens:</p>
+<p>We see one regression line describing our relationship between carbon prices and GHG emissions over all units in our dataset. If we now add a dummy variable for Switzerland and Denmark, the following happens:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -330,18 +330,19 @@ emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}
 </div>
 </div>
 </div>
-<p>We see that each country has now its own intercept. Each intercept captures all time-stable characteristics of the respective country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we controlled for time-constant confounders – which in our example has visibly led to different results than an OLS regression.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;Pretty cool, right?</p></div></div><p>In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.</p>
+<p>We observe that each country now has its own intercept, which captures all time-stable characteristics specific to that country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we accounted for all time-constant country-specific confounders.</p>
+<p>In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.</p>
 </section>
 <section id="statistical-estimation-with-demeaning" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="statistical-estimation-with-demeaning">Statistical estimation with demeaning</h3>
-<p>Another way to extract the within-unit variation and control for time-stable confounders is <em>demeaning</em> or the <em>within transformation</em>. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation:</p>
+<p>Another way to extract the within-unit variation and control for time-stable confounders is <em>demeaning</em> or the <em>within transformation</em>. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation. Manually performing this in R could look like this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">&amp;</span> Year <span class="sc">&gt;</span> <span class="dv">2007</span> <span class="sc">&amp;</span> Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_che <span class="sc">|&gt;</span> <span class="co"># data of Switzerland</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price), <span class="co"># demeaning: subtracting mean from observations</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The new dataset that results from such a transformation would then look like this:</p>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>       Country Code Year Carbon_price Emission_per_capita
 1  Switzerland  CHE 2008  -10.1669691          0.96726094
@@ -356,8 +357,8 @@ emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}
 10 Switzerland  CHE 2017    5.7114663         -0.36908716</code></pre>
 </div>
 </div>
-<p>To enhance our understanding of how demeaning eliminates time-stable confounders we can also revisit our equations from above. Let’s take a look at our Fixed Effects equation – where <span class="math inline">\(\alpha_i\)</span> stands for our time-constant <a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> confounders:</p>
-<div class="no-row-height column-margin column-container"><div id="fn7"><p><sup>7</sup>&nbsp;note the missing t in the subscript</p></div></div><p><span class="math display">\[
+<p>To enhance our intuition of how demeaning eliminates time-stable confounders, I would also like to revisit our equations from above. Let’s take a look at our basic Fixed Effects equation – where <span class="math inline">\(\alpha_i\)</span> stands for our time-constant <a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> confounders:</p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;note the missing t in the subscript</p></div></div><p><span class="math display">\[
 Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}
 \]</span></p>
 <p>By demeaning, each observation at all time-points <span class="math inline">\(t\)</span> is subtracted from the mean of all observations of unit <span class="math inline">\(i\)</span>:</p>
@@ -374,14 +375,14 @@ Y_{it} = \alpha_i - \bar \alpha_i + \beta (X_{it} - \bar X_{i}) + \epsilon_{it} 
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-More thoughts on this?
+More thoughts on this
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>For me, this process illustrates well what the basic idea of a Fixed Effects regression is. We know that time-stable variables of a unit do not change over time. If we perform demeaning and only look at the variation within a unit (where these possible variables remain stable over time) we don’t have to worry about these factors affecting our causal relationship – as they do not vary over time.</p>
 </div>
 </div>
-<p>After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is successfully completed.</p>
+<p>After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is completed. However, if we want to calculate a Fixed Effects model in R, we will not usually do this manually with the steps described here. There are good packages that do all the work for you and save you a lot of time. I can highly recommend the plm-package. You can find some information about it <a href="https://cran.r-project.org/web/packages/plm/vignettes/A_plmPackage.html">here</a>.</p>
 
 
 <!-- -->
@@ -854,7 +855,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "The magic of Fixed Effects regression"</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-09-02</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "In this article I give a short introduction to Fixed Effects regression. I try to give an intuition of how it works and in which scenarios it is useful"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "In this article I give a short introduction to Fixed Effects regression. I aim to provide an intuition for how it works and the scenarios in which it is most useful"</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "img/teaser-img_fixed-effects.png"</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">  - Econometrics</span></span>
@@ -905,7 +906,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
 <span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why could cultural factors in a country be confounding here?</span></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in CO2 emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between CO2 prices and CO2 anymore.</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>Suppose a country with a strong cultural commitment to climate protection implements or increases a carbon price and sees a reduction in GHG emissions. In this case, one might attribute the reduction solely to the carbon price. However, the reduction could also be driven by other complementary policies and measures (e.g., renewable energy subsidies, energy efficiency standards) that were adopted due to the same cultural commitment. In this case there would no causal relation between carbon prices and GHG emissions anymore.</span>
 <span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>To minimize the influence of such confounders, statisticians and social scientists have developed various methods. One of them is Fixed Effects regression.</span>
@@ -914,126 +915,140 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>Fixed Effects regression is a regression model with which it is relatively easy to control for time-constant confounders. This means we can eliminate the impact of any time-stable variable that might influence our main effect of interest. The beautiful thing here is that we eliminate all time-constant confounders – regardless of whether we observed them or not. In our example, this means that we don’t have to care about any time-constant country characteristics ^<span class="co">[</span><span class="ot">There are a lot! Just think about the different political systems, cultural and economic conditions, …</span><span class="co">]</span> that could in any way confound the relationship between carbon prices and GHG emissions. We achieve this by only looking at the variation of the data within a unit of analysis. </span>
 <span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore only possible if we have several observations of a unit (e.g., a country) – i.e., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood. </span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>In our example, this means that we examine how the carbon price affects GHG emissions solely within each country. Fixed Effects regression is therefore especially useful if we have several observations of a unit (e.g., a country) – e.g., if we have panel data. In the next section, I will explain how possible data for a Fixed Effects regression looks like and what happens under the hood. </span>
 <span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## How does a Fixed Effects regression work?</span></span>
 <span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>As already mentioned, a Fixed Effects regression can be performed whenever we have repeated observations of or within the same unit (e.g., individuals, countries, ...). In a dataset, this could look like this, for example:</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>As already mentioned, a Fixed Effects regression is typicallyn done whenever we have repeated observations of or within the same unit (e.g., individuals, countries, ...). In a dataset, this could look like this, for example:</span>
 <span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
 <span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
 <span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span>, Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>Here we see that we have repeated measurements of the predictor *carbon price* and the dependent variable *emissions* from Switzerland for several years.</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span>, Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="ot">-&gt;</span> df_che</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>df_che <span class="sc">|&gt;</span> </span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>With such a data set, a Fixed Effects regression model could now be set up, which could best be mathematically described with this equation:</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>Here we see that we have repeated measurements of the predictor *carbon price* and the dependent variable *emissions per capita* from Switzerland for several years.</span>
 <span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>With such a data set, a Fixed Effects regression model could now be set up, which could best be mathematically described with this equation:</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>Let's break this formula down:</span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$Y$ stands for the value of the dependent variable for unit $i$ at time point $t$</span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$X$ is the vector of all time-variant predictors ^<span class="co">[</span><span class="ot">in case we have just have one predictor, there is no vector or matrix needed</span><span class="co">]</span></span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\beta$ is the matrix of the corresponding parameters of the predictors</span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\alpha_i$ represents unobserved time-stable individual effects - that’s why the subscript $t$ is missing here</span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The formula also contains an error term $\epsilon_{it}$ that varies over time and across units</span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>In our example, which includes only the predictor *carbon price*, the formula would be as follows:</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>Let's break this formula down:</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$Y$ stands for the value of the dependent variable for unit $i$ at time point $t$</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$X$ is the vector of all time-variant predictors ^<span class="co">[</span><span class="ot">in case we have just have one predictor, there is no vector or matrix needed</span><span class="co">]</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\beta$ is the matrix of the corresponding parameters of the predictors</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\alpha_i$ represents unobserved time-stable individual effects - that’s why the subscript $t$ is missing here</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The formula also contains an error term $\epsilon_{it}$ that varies over time and across units</span>
 <span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>In our example, which includes only the predictor *carbon price*, the formula would be as follows:</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>With our model now established, the next step is to estimate the coefficient(s) $\beta$ to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: *demeaning* and adding a *dummy variable* for each unit. This will also help us gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders. </span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>emissions_{it} = \alpha_i + \beta price_{it} + \epsilon_{it}</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical estimation by adding a dummy variable for each unit</span></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>With our model now established, the next step is to estimate the coefficient(s) $\beta$ to draw conclusions about the statistical relationships between the variables. There are numerous options for the statistical estimation of our model. In this article, I would like to take a closer look at two very common procedures: *demeaning* and *adding a dummy variable for each unit*. This will hopefully also help us to gain a deeper understanding of how Fixed Effects regression eliminates all time-stable confounders. </span>
 <span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>One of the numerically simplest variants for estimating the model is to construct a dummy variable for each unit (e.g., individuals, countries) ^<span class="co">[</span><span class="ot">technically, we should omit the first unit to avoid multicollinearity</span><span class="co">]</span>. When doing this, each unit receives its own intercept. Each intercept then captures all the time-stable characteristics of that unit, meaning any systematic differences between units are absorbed by the individual intercepts. </span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical estimation by adding a dummy variable for each unit</span></span>
 <span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>Let’s take look at the relationship of carbon prices and GHG emissions in three selected countries of our dataset. For illustrative reasons, I select data from Switzerland, Denmark, and Norway since 2007. When running a linear regression over the data without adding any country-level dummy variables, the results look something like this:</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>One of the numerically simplest variants for estimating the model is to construct a dummy variable for each unit (e.g., individuals, countries) ^<span class="co">[</span><span class="ot">technically, we should omit the first unit to avoid multicollinearity</span><span class="co">]</span>. When doing this, each unit receives its own intercept. Each intercept then captures all the time-stable characteristics of that unit, meaning any systematic differences between units are absorbed by the individual intercepts. </span>
 <span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
-<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">|</span> Code <span class="sc">==</span> <span class="st">"DNK"</span> <span class="sc">|</span> Code <span class="sc">==</span> <span class="st">"NOR"</span>) <span class="sc">&amp;</span> Year <span class="sc">&gt;=</span> <span class="dv">2007</span>) <span class="ot">-&gt;</span> df_dummies</span>
-<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(Emission_per_capita <span class="sc">~</span> Carbon_price <span class="sc">+</span> <span class="fu">factor</span>(Code), <span class="at">data =</span> df_dummies) <span class="ot">-&gt;</span> lm_dummies</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>Let’s take look at the relationship of carbon prices and GHG emissions in two selected countries of our dataset. For illustrative reasons, I select data from Switzerland and Denmark since 2007. When running a linear regression without adding any country-level dummy variables, the results look something like this:</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">|</span> Code <span class="sc">==</span> <span class="st">"DNK"</span>) <span class="sc">&amp;</span> Year <span class="sc">&gt;=</span> <span class="dv">2007</span>) <span class="ot">-&gt;</span> df_dummies</span>
 <span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="ot">&lt;-</span> <span class="fu">cbind</span>(df_dummies, <span class="at">pred =</span> <span class="fu">predict</span>(lm_dummies))</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(Emission_per_capita <span class="sc">~</span> Carbon_price <span class="sc">+</span> <span class="fu">factor</span>(Code), <span class="at">data =</span> df_dummies) <span class="ot">-&gt;</span> lm_dummies</span>
 <span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="sc">|&gt;</span> </span>
-<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Carbon_price,</span>
-<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> Emission_per_capita)) <span class="sc">+</span></span>
-<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">se =</span> F) <span class="sc">+</span></span>
-<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Carbon prices"</span>,</span>
-<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"GHG emissions per capita"</span>)</span>
-<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>The data is spread out and – based on our regression line – we see a positive relationship between carbon prices and GHG emissions. If we now add a dummy variable for Switzerland, Denmark, and Norway, the following happens: </span>
-<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="sc">|&gt;</span> </span>
-<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Carbon_price,</span>
-<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> Emission_per_capita,</span>
-<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>                       <span class="at">colour =</span> Country)) <span class="sc">+</span></span>
-<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">se =</span> F, <span class="at">fullrange =</span> T,</span>
-<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>              <span class="at">mapping =</span> (<span class="fu">aes</span>(<span class="at">y =</span> pred))) <span class="sc">+</span></span>
-<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Carbon prices"</span>,</span>
-<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"GHG emissions per capita"</span>)</span>
-<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>We see that each country has now its own intercept. Each intercept captures all time-stable characteristics of the respective country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we controlled for time-constant confounders – which in our example has visibly led to different results than an OLS regression.^<span class="co">[</span><span class="ot">Pretty cool, right?</span><span class="co">]</span></span>
-<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a>In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.</span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="ot">&lt;-</span> <span class="fu">cbind</span>(df_dummies, <span class="at">pred =</span> <span class="fu">predict</span>(lm_dummies))</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="sc">|&gt;</span> </span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Carbon_price,</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> Emission_per_capita)) <span class="sc">+</span></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">se =</span> F, <span class="at">color =</span> <span class="st">"#00ba38"</span>) <span class="sc">+</span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Carbon prices"</span>,</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"GHG emissions per capita"</span>) <span class="sc">+</span></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>We see one regression line describing our relationship between carbon prices and GHG emissions over all units in our dataset. If we now add a dummy variable for Switzerland and Denmark, the following happens: </span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>df_dummies <span class="sc">|&gt;</span> </span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Carbon_price,</span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> Emission_per_capita,</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>                       <span class="at">colour =</span> Country)) <span class="sc">+</span></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">se =</span> F, <span class="at">fullrange =</span> T,</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>              <span class="at">mapping =</span> (<span class="fu">aes</span>(<span class="at">y =</span> pred))) <span class="sc">+</span></span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Carbon prices"</span>,</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"GHG emissions per capita"</span>) <span class="sc">+</span></span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical estimation with demeaning</span></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a>We observe that each country now has its own intercept, which captures all time-stable characteristics specific to that country. In our example, these could include factors such as the political system, cultural norms, or economic conditions. So, by adding dummy variables for each country and constructing country-level intercepts, we accounted for all time-constant country-specific confounders.</span>
 <span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>Another way to extract the within-unit variation and control for time-stable confounders is *demeaning* or the *within transformation*. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation:</span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>In practice, I do not recommend estimating the model with dummy variables, as it becomes computationally intensive as soon as you have more than just a few units in your data set. In most situations, the preferred approach is demeaning.</span>
 <span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>df_joined <span class="sc">|&gt;</span> </span>
-<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"CHE"</span> <span class="sc">&amp;</span> Year <span class="sc">&gt;</span> <span class="dv">2007</span> <span class="sc">&amp;</span> Carbon_price <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price),</span>
-<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>To enhance our understanding of how demeaning eliminates time-stable confounders we can also revisit our equations from above. Let’s take a look at our Fixed Effects equation – where $\alpha_i$ stands for our time-constant ^<span class="co">[</span><span class="ot">note the missing t in the subscript</span><span class="co">]</span> confounders:</span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical estimation with demeaning</span></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>Another way to extract the within-unit variation and control for time-stable confounders is *demeaning* or the *within transformation*. By demeaning, we subtract the mean of all observations for a given unit (e.g., an individual or country) from each observation of that unit. So, in our Switzerland dataset from above, this means we take all our observations of each year, calculate their mean, and then subtract that mean value from each observation. Manually performing this in R could look like this:</span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>df_che <span class="sc">|&gt;</span> <span class="co"># data of Switzerland</span></span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price), <span class="co"># demeaning: subtracting mean from observations</span></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita))</span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}</span>
-<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>By demeaning, each observation at all time-points $t$ is subtracted from the mean of all observations of unit $i$:</span>
-<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i - \bar \alpha_i + \beta (X_{it} - \bar X_{i}) + \epsilon_{it} - \bar \epsilon_{i}</span>
-<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>Since $\alpha_i$ is time-constant and has thus the same value at different time points, its mean $\bar \alpha$ is identical to $\alpha_i$ – which eliminates $\alpha_i$ from our equation. From this follows a transformed equation – in which our time-stable confounders have been removed:</span>
-<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a>\ddot{Y_{it}}= \ddot{\beta X_{it}} + \ddot{\epsilon_{it}}</span>
-<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## More thoughts on this?</span></span>
-<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>For me, this process illustrates well what the basic idea of a Fixed Effects regression is. We know that time-stable variables of a unit do not change over time. If we perform demeaning and only look at the variation within a unit (where these possible variables remain stable over time) we don't have to worry about these factors affecting our causal relationship – as they do not vary over time. </span>
-<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a>The new dataset that results from such a transformation would then look like this:</span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>df_che <span class="sc">|&gt;</span> <span class="co"># data of Switzerland</span></span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Carbon_price =</span> Carbon_price <span class="sc">-</span> <span class="fu">mean</span>(Carbon_price), <span class="co"># demeaning: subtracting mean from observations</span></span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>         <span class="at">Emission_per_capita =</span> Emission_per_capita <span class="sc">-</span> <span class="fu">mean</span>(Emission_per_capita)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="co"># show first rows of new dataset</span></span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a>To enhance our intuition of how demeaning eliminates time-stable confounders, I would also like to revisit our equations from above. Let’s take a look at our basic Fixed Effects equation – where $\alpha_i$ stands for our time-constant ^<span class="co">[</span><span class="ot">note the missing t in the subscript</span><span class="co">]</span> confounders:</span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i + \beta X_{it}+ \epsilon_{it}</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>By demeaning, each observation at all time-points $t$ is subtracted from the mean of all observations of unit $i$:</span>
 <span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is successfully completed.</span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>Y_{it} = \alpha_i - \bar \alpha_i + \beta (X_{it} - \bar X_{i}) + \epsilon_{it} - \bar \epsilon_{i}</span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a>Since $\alpha_i$ is time-constant and has thus the same value at different time points, its mean $\bar \alpha$ is identical to $\alpha_i$ – which eliminates $\alpha_i$ from our equation. From this follows a transformed equation – in which our time-stable confounders have been removed:</span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a>\ddot{Y_{it}}= \ddot{\beta X_{it}} + \ddot{\epsilon_{it}}</span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a><span class="fu">## More thoughts on this</span></span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a>For me, this process illustrates well what the basic idea of a Fixed Effects regression is. We know that time-stable variables of a unit do not change over time. If we perform demeaning and only look at the variation within a unit (where these possible variables remain stable over time) we don't have to worry about these factors affecting our causal relationship – as they do not vary over time. </span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a>After demeaning our data, we then simply calculate an OLS regression – and our Fixed Effects regression is completed. However, if we want to calculate a Fixed Effects model in R, we will not usually do this manually with the steps described here. There are good packages that do all the work for you and save you a lot of time. I can highly recommend the plm-package. You can find some information about it <span class="co">[</span><span class="ot">here</span><span class="co">](https://cran.r-project.org/web/packages/plm/vignettes/A_plmPackage.html)</span>.</span>
+<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
